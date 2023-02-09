@@ -1,18 +1,37 @@
-use crate::game_state::GameSession;
+use crate::bars::{healthbar_new, Bar};
+use crate::game_state::{player::PLAYER_MAX_HEALTH, GameSession};
+use crate::ui::{Progressbar, ProgressbarBundle};
 use bevy::prelude::*;
 
-mod healthbar;
-use healthbar::Healthbar;
+pub struct PlayerPlugin;
 
-pub struct Player;
-
-impl Plugin for Player {
+impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(setup)
             .add_system(animate_sprite)
             .add_system(keyboard_input_system)
-            .add_plugin(Healthbar);
+            .add_system(health_changed);
     }
+}
+
+#[derive(Component)]
+struct Player {
+    prev_health: u16,
+}
+
+fn health_changed(
+    game_session: Res<GameSession>,
+    mut query: Query<(&mut Progressbar, &mut Player)>,
+) {
+    let Ok((mut progressbar, mut player)) = query.get_single_mut() else {
+        panic!("Can't find progressbar & player");
+    };
+    let player_health = game_session.get_player().health;
+    if player_health == player.prev_health {
+        return;
+    }
+    player.prev_health = player_health;
+    progressbar.value = player_health.into();
 }
 
 #[derive(Component)]
@@ -44,13 +63,11 @@ fn keyboard_input_system(keyboard_input: Res<Input<KeyCode>>, mut game_state: Re
         direction = Some(Direction::Bottom);
     } else if keyboard_input.just_pressed(KeyCode::Left) {
         direction = Some(Direction::Left);
-    } else if keyboard_input.just_pressed(KeyCode::Space) {
-        game_state.get_player_mut().health -= 10;
     }
 
     if let Some(d) = direction {
         if !game_state.move_player(d) {
-            info!("Can't move player there");
+            error!("Can't move player there");
         }
     }
 }
@@ -88,4 +105,17 @@ fn setup(
         },
         AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
     ));
+
+    let progressbar_entity = ProgressbarBundle::spawn(
+        &mut commands,
+        healthbar_new(Bar {
+            max: PLAYER_MAX_HEALTH,
+            value: PLAYER_MAX_HEALTH,
+            position: Vec2::new(-250.0, -270.0),
+            visible: true,
+        }),
+    );
+    commands.entity(progressbar_entity).insert(Player {
+        prev_health: PLAYER_MAX_HEALTH,
+    });
 }

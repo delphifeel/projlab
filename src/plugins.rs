@@ -1,5 +1,8 @@
 mod doors;
-pub use doors::Doors;
+pub use doors::*;
 
 mod player;
-pub use player::Player;
+pub use player::*;
+
+mod enemies;
+pub use enemies::*;

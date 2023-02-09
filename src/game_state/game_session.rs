@@ -2,8 +2,9 @@ use bevy::prelude::*;
 use std::collections::HashMap;
 
 use super::direction::Direction;
+use super::enemy::Enemy;
 use super::player::Player;
-use super::room::{Connections, Room};
+use super::room::Room;
 
 #[derive(Resource)]
 pub struct GameSession {
@@ -20,8 +21,8 @@ fn build_rooms_map() -> HashMap<usize, Room> {
 
     for col in 1..MATRIX_SIZE + 1 {
         for row in 1..MATRIX_SIZE + 1 {
-            let mut room = Room::default();
             let id: usize = (col - 1) * MATRIX_SIZE + row;
+            let mut room = Room::new(id);
             if row != 1 {
                 room.connections.left = Some(id - 1);
             }
@@ -36,6 +37,16 @@ fn build_rooms_map() -> HashMap<usize, Room> {
             }
             result.insert(id, room);
         }
+    }
+
+    // add enemies in some rooms
+    if let Some(room) = result.get_mut(&2) {
+        room.enemies.push(Enemy::new_warrior());
+        room.enemies.push(Enemy::new_mage());
+    }
+    if let Some(room) = result.get_mut(&17) {
+        room.enemies.push(Enemy::new_mage());
+        room.enemies.push(Enemy::new_mage());
     }
 
     result

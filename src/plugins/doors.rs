@@ -2,11 +2,12 @@ use bevy::prelude::*;
 
 use crate::game_state::{Direction, GameSession};
 
-pub struct Doors;
+pub struct DoorsPlugin;
 
-const _POSITION: f32 = 200.0;
+const _POSITION_X: f32 = 330.0;
+const _POSITION_Y: f32 = 280.0;
 
-impl Plugin for Doors {
+impl Plugin for DoorsPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(setup).add_system(show_doors);
     }
@@ -50,8 +51,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             Door { direction },
         )
     };
-    commands.spawn(make_door_bundle(0.0, -_POSITION, Direction::Bottom));
-    commands.spawn(make_door_bundle(_POSITION, 0.0, Direction::Right));
-    commands.spawn(make_door_bundle(0.0, _POSITION, Direction::Top));
-    commands.spawn(make_door_bundle(-_POSITION, 0.0, Direction::Left));
+    commands.spawn(make_door_bundle(0.0, -_POSITION_Y, Direction::Bottom));
+    commands.spawn(make_door_bundle(_POSITION_X, 0.0, Direction::Right));
+    commands.spawn(make_door_bundle(0.0, _POSITION_Y, Direction::Top));
+    commands.spawn(make_door_bundle(-_POSITION_X, 0.0, Direction::Left));
 }

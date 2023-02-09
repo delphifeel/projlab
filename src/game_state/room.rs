@@ -1,3 +1,5 @@
+use super::enemy::Enemy;
+
 pub struct Connections {
     pub top: Option<usize>,
     pub right: Option<usize>,
@@ -17,13 +19,17 @@ impl Default for Connections {
 }
 
 pub struct Room {
+    pub id: usize,
     pub connections: Connections,
+    pub enemies: Vec<Enemy>,
 }
 
-impl Default for Room {
-    fn default() -> Self {
+impl Room {
+    pub fn new(id: usize) -> Self {
         Self {
+            id,
             connections: Connections::default(),
+            enemies: Vec::default(),
         }
     }
 }

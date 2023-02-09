@@ -1,9 +1,15 @@
+mod bars;
+
 mod game_state;
+use game_state::GameSession;
+
 mod plugins;
+use plugins::{DoorsPlugin, EnemiesPlugin, PlayerPlugin};
+
+mod ui;
+use ui::ProgressbarPlugin;
 
 use bevy::prelude::*;
-use game_state::GameSession;
-use plugins::{Doors, Player};
 
 fn main() {
     App::new()
@@ -19,8 +25,10 @@ fn main() {
                     ..default()
                 }),
         )
-        .add_plugin(Doors)
-        .add_plugin(Player)
+        .add_plugin(ProgressbarPlugin)
+        .add_plugin(DoorsPlugin)
+        .add_plugin(PlayerPlugin)
+        .add_plugin(EnemiesPlugin)
         .add_startup_system(setup)
         .run();
 }
