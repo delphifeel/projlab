@@ -21,20 +21,12 @@ struct Door {
 fn show_doors(mut query: Query<(&Door, &mut Visibility)>, game_state: Res<GameSession>) {
     let player_room = game_state.get_player_room();
     for (door, mut visibility) in query.iter_mut() {
-        match door.direction {
-            Direction::Top => {
-                visibility.is_visible = player_room.connections.top.is_some();
-            }
-            Direction::Right => {
-                visibility.is_visible = player_room.connections.right.is_some();
-            }
-            Direction::Bottom => {
-                visibility.is_visible = player_room.connections.bottom.is_some();
-            }
-            Direction::Left => {
-                visibility.is_visible = player_room.connections.left.is_some();
-            }
-        }
+        visibility.is_visible = match door.direction {
+            Direction::Top => player_room.connections.top.is_some(),
+            Direction::Right => player_room.connections.right.is_some(),
+            Direction::Bottom => player_room.connections.bottom.is_some(),
+            Direction::Left => player_room.connections.left.is_some(),
+        };
     }
 }
 

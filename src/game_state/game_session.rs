@@ -1,13 +1,7 @@
 use bevy::prelude::*;
 use std::collections::HashMap;
 
-use super::{
-    direction::Direction,
-    enemy::Enemy,
-    player::Player,
-    room::Room,
-    action::Action,
-};
+use super::{action::Action, direction::Direction, enemy::Enemy, player::Player, room::Room};
 
 #[derive(Resource)]
 pub struct GameSession {
@@ -71,7 +65,7 @@ impl GameSession {
         }
     }
 
-    pub fn move_player(&mut self, direction: Direction) -> Option<Action> {
+    pub fn move_player(&mut self, direction: Direction) -> Option<&Action> {
         let player_room = self.get_player_room();
         let new_room = match direction {
             Direction::Top => player_room.connections.top,
@@ -82,7 +76,7 @@ impl GameSession {
         if let Some(new_room_id) = new_room {
             self.player_room_id = new_room_id;
             self.player.action = Action::Resting(10.0);
-            Some(self.player.action)
+            Some(&self.player.action)
         } else {
             None
         }

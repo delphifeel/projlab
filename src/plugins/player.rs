@@ -1,8 +1,5 @@
 use crate::bars::{healthbar_new, Bar};
-use crate::game_state::{
-    Action,
-    player::PLAYER_MAX_HEALTH, GameSession,
-};
+use crate::game_state::{player::PLAYER_MAX_HEALTH, Action, GameSession};
 use crate::ui::Progressbar;
 use bevy::prelude::*;
 
@@ -72,11 +69,10 @@ fn keyboard_input_system(keyboard_input: Res<Input<KeyCode>>, mut game_state: Re
         return;
     };
 
-    let Some(after_move_action) = game_state.move_player(direction) else {
+    let Some(_after_move_action) = game_state.move_player(direction) else {
         error!("Can't move player there");
         return;
     };
-    
 }
 
 fn setup(
