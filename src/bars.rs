@@ -1,4 +1,4 @@
-use crate::ui::Progressbar;
+use crate::{layers::UI_LAYER, ui::Progressbar};
 use bevy::prelude::*;
 
 pub struct Bar {
@@ -25,7 +25,7 @@ pub fn healthbar_new(config: Bar) -> Progressbar {
         value: config.value as f32,
         width: 100.0,
         height: 15.0,
-        position: Vec3::new(config.position.x, config.position.y, 2.0),
+        position: Vec3::new(config.position.x, config.position.y, UI_LAYER),
         filled_color: Color::rgb(0.0, 0.7, 0.0),
         background_color: Color::rgba(0.0, 0.0, 0.0, 0.3),
         visible: config.visible,

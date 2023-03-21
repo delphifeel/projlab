@@ -1,7 +1,7 @@
 use crate::{
     bars::{healthbar_new, Bar},
     game_state::{Enemy, GameSession},
-    ui::{Progressbar, ProgressbarBundle},
+    ui::Progressbar,
 };
 use bevy::prelude::*;
 use std::sync::Mutex;
@@ -45,9 +45,10 @@ fn change_visibility_according_to_enemy(
     enemy: Option<&Enemy>,
 ) {
     let mut visibility = q_visibility.get_mut(enemy_component.sprite_entity).unwrap();
-    let mut healthbar = q_heathbar
-        .get_mut(enemy_component.healthbar_entity)
-        .unwrap();
+    let Ok(mut healthbar) = q_heathbar
+        .get_mut(enemy_component.healthbar_entity) else {
+            panic!("Can't find enemy healthbar");
+        };
 
     match enemy {
         Some(enemy_v) => {
@@ -120,7 +121,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             .id();
 
         // healthbar
-        let healthbar_entity = ProgressbarBundle::spawn(
+        let healthbar_entity = Progressbar::spawn(
             &mut commands,
             healthbar_new(Bar {
                 position: Vec2::new(spawn_point.x, spawn_point.y + 30.0),

@@ -1,4 +1,5 @@
 mod bars;
+mod layers;
 
 mod game_state;
 use game_state::GameSession;

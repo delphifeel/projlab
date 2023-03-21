@@ -1,6 +1,9 @@
 use crate::bars::{healthbar_new, Bar};
-use crate::game_state::{player::PLAYER_MAX_HEALTH, GameSession};
-use crate::ui::{Progressbar, ProgressbarBundle};
+use crate::game_state::{
+    Action,
+    player::PLAYER_MAX_HEALTH, GameSession,
+};
+use crate::ui::Progressbar;
 use bevy::prelude::*;
 
 pub struct PlayerPlugin;
@@ -65,11 +68,15 @@ fn keyboard_input_system(keyboard_input: Res<Input<KeyCode>>, mut game_state: Re
         direction = Some(Direction::Left);
     }
 
-    if let Some(d) = direction {
-        if !game_state.move_player(d) {
-            error!("Can't move player there");
-        }
-    }
+    let Some(direction) = direction else {
+        return;
+    };
+
+    let Some(after_move_action) = game_state.move_player(direction) else {
+        error!("Can't move player there");
+        return;
+    };
+    
 }
 
 fn setup(
@@ -106,7 +113,7 @@ fn setup(
         AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
     ));
 
-    let progressbar_entity = ProgressbarBundle::spawn(
+    let progressbar_entity = Progressbar::spawn(
         &mut commands,
         healthbar_new(Bar {
             max: PLAYER_MAX_HEALTH,

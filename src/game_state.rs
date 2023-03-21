@@ -1,3 +1,6 @@
+mod action;
+pub use action::*;
+
 pub mod player;
 mod room;
 
